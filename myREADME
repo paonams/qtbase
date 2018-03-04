@@ -1,0 +1,5 @@
+
+working compilation command:
+----------------------------
+./configure -opensource -opengl es2 -debug -shared --gui=yes -widgets -device linux-odroid-xu3-g++ -device-option CROSS_COMPILE=/home/sanjit/Documents/workArea/LINUXCNC/tools/buildroot//output/host/usr/bin/arm-linux-gnueabihf- -sysroot /home/sanjit/Documents/workArea/LINUXCNC/tools/buildroot//output/host/usr/arm-buildroot-linux-gnueabihf/sysroot/ -pkg-config
+
