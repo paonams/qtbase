@@ -4,4 +4,5 @@ SUBDIRS       = application \
                 mainwindow \
                 mdi \
                 menus \
-                sdi
+                sdi \
+		cnc
