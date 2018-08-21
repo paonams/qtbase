@@ -60,6 +60,8 @@ class QListWidget;
 class QMenu;
 //class QTextEdit;
 class QPlainTextEdit;
+class QComboBox;
+class QPushButton;
 QT_END_NAMESPACE
 
 //! [0]
@@ -98,6 +100,24 @@ private:
     QPlainTextEdit *textEdit;
     QDockWidget *mGcodeDock;
     QMenu *mViewMenu;
+};
+
+class CommandLineWidget : public QWidget
+{
+    Q_OBJECT
+    public:
+	explicit CommandLineWidget(QWidget *parent = 0);
+	void execute();
+	QComboBox *createComboBox(const QString &text = QString());
+	void animateExecuteClick();
+	void executeGcode();
+	void updateGcodeHistory(QString& gCode);
+
+    private:
+	QTextEdit *mTextEdit;
+	CodeEditor* mGcodeHistoryList;
+	QPushButton* mExecuteButton;
+	QComboBox* mGcodeBox;
 };
 //! [0]
 

@@ -340,12 +340,64 @@ void MainWindow::createStatusBar()
 //! [8]
 
 //! [9]
+
+CommandLineWidget::CommandLineWidget(QWidget *parent)
+	:QWidget(parent)
+{
+    mGcodeHistoryList = new CodeEditor(this);
+    mGcodeHistoryList->clear();
+    mGcodeHistoryList->setPlainText(QString());
+    mGcodeHistoryList->setReadOnly(true);
+    
+    mGcodeBox = createComboBox();
+    connect(mGcodeBox->lineEdit(), &QLineEdit::returnPressed,
+	    this, &CommandLineWidget::animateExecuteClick);
+
+    mExecuteButton = new QPushButton(tr("&Go"), this);
+    connect(mExecuteButton, &QAbstractButton::clicked, this, &CommandLineWidget::executeGcode);
+
+    QGridLayout *mainLayout = new QGridLayout(this);
+
+    mainLayout->addWidget(mGcodeHistoryList, 0, 0, 1, 1);
+    mainLayout->addWidget(mGcodeBox, 1, 0, 1, 1);
+    mainLayout->addWidget(mExecuteButton, 1, 1, 1, 1);
+}
+
+QComboBox *CommandLineWidget::createComboBox(const QString &text)
+{
+    QComboBox *comboBox = new QComboBox;
+    comboBox->setEditable(true);
+    comboBox->addItem(text);
+    comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    return comboBox;
+}
+
+void CommandLineWidget::animateExecuteClick()
+{
+    mExecuteButton->animateClick();
+}
+
+void CommandLineWidget::executeGcode()
+{
+    std::cout<<__FUNCTION__<<" called\n";
+    QString gCode = mGcodeBox->currentText();
+    std::cout<<__FUNCTION__<<" gcode "<<gCode.toStdString()<<"\n";
+    updateGcodeHistory(gCode);
+    mGcodeBox->clearEditText();
+}
+
+void CommandLineWidget::updateGcodeHistory(QString& gCode)
+{
+    mGcodeHistoryList->appendPlainText(gCode);
+}
 void MainWindow::createDockWindows()
 {
-    QDockWidget *dock = new QDockWidget(tr("Tool path"), this);
+    QDockWidget *dock = new QDockWidget(tr("History"), this);
     //dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     //dock->setAllowedAreas(Qt::RightDockWidgetArea | Qt::TopDockWidgetArea);
     dock->setAllowedAreas(Qt::RightDockWidgetArea);
+    CommandLineWidget* commandLineWidget = new CommandLineWidget(dock);
+#if 0
     customerList = new QListWidget(dock);
     customerList->addItems(QStringList()
             << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
@@ -355,16 +407,21 @@ void MainWindow::createDockWindows()
             << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
             << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
     dock->setWidget(customerList);
+    //dock->setFloating(false);
+#endif 
+
+    dock->setWidget(commandLineWidget);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
     addDockWidget(Qt::RightDockWidgetArea, dock);
     mViewMenu->addAction(dock->toggleViewAction());
-    setCentralWidget(dock);
-#if 1
+
+//    setCentralWidget(dock);
+#if 0
     mGcodeDock = new QDockWidget(tr("G code"), this);
     mGcodeDock->setAllowedAreas(Qt::LeftDockWidgetArea);
     //mGcodeList = new QListWidget(mGcodeDock);
     //mGcodeList = new QPlainTextEdit(mGcodeDock);
     mGcodeList = new CodeEditor(mGcodeDock);
-#if 0
     mGcodeList->addItems(QStringList()
             << "Thank you for your payment which we have received today."
             << "Your order has been dispatched and should be with you "
@@ -383,13 +440,13 @@ void MainWindow::createDockWindows()
                "the complete amount has been received."
             << "You made an overpayment (more than $5). Do you wish to "
                "buy more items, or should we return the excess to you?");
-#endif
     mGcodeDock->setWidget(mGcodeList);
     addDockWidget(Qt::LeftDockWidgetArea, mGcodeDock);
     mViewMenu->addAction(mGcodeDock->toggleViewAction());
+#endif
 
 
-    dock = new QDockWidget(tr("Axis Control"), this);
+    dock = new QDockWidget(tr("Program"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea);
     paragraphsList = new QListWidget(dock);
     paragraphsList->addItems(QStringList()
@@ -411,9 +468,11 @@ void MainWindow::createDockWindows()
             << "You made an overpayment (more than $5). Do you wish to "
                "buy more items, or should we return the excess to you?");
     dock->setWidget(paragraphsList);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
+    //dock->setFloating(false);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    addDockWidget(Qt::LeftDockWidgetArea, dock, Qt::Vertical);
     mViewMenu->addAction(dock->toggleViewAction());
-#endif
+    //setCentralWidget(dock);
 
 //    connect(customerList, &QListWidget::currentTextChanged,
 //            this, &MainWindow::insertCustomer);
