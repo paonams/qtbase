@@ -3,3 +3,12 @@ working compilation command:
 ----------------------------
 ./configure -opensource -opengl es2 -debug -shared --gui=yes -widgets -device linux-odroid-xu3-g++ -device-option CROSS_COMPILE=/home/sanjit/Documents/workArea/LINUXCNC/tools/buildroot//output/host/usr/bin/arm-linux-gnueabihf- -sysroot /home/sanjit/Documents/workArea/LINUXCNC/tools/buildroot//output/host/usr/arm-buildroot-linux-gnueabihf/sysroot/ -pkg-config
 
+./configure -opensource -opengl es2 -debug -shared --gui=yes -widgets -device linux-odroid-xu3-g++ -device-option CROSS_COMPILE=/opt/ARM/buildroot/output/host/usr/bin/arm-linux-gnueabihf- -sysroot /opt/ARM/buildroot/output/host/usr/arm-buildroot-linux-gnueabihf/sysroot/ -pkg-config
+
+
+apt-get install libfontconfig1-dev
+apt-get install libharfbuzz-dev
+
+
+https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+
